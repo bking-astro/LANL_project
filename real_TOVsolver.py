@@ -94,15 +94,15 @@ def TOV(y, p, EOS_e):
 
 def solve(EOS_table, max_pressure):
     """
-    EOS_table: pandas data frame containing the baryon density (0.16 fm-3), pressure (MeV/fm3), and energy density (MeV/fm3).
+    EOS_table: numpy array containing the baryon density (0.16 fm-3), pressure (MeV/fm3), and energy density (MeV/fm3).
     max_pressure: Scalar value for maximum central pressure (MeV/fm3) used when solving the TOV equations.
 
     MRL_table: numpy array containing mass (Mo), radius (km), Lambda (unitless)
     """
 
     # get pressure and energy density in numpy array
-    p = MeV_to_km * EOS_table[1].to_numpy()
-    e = MeV_to_km * EOS_table[2].to_numpy()
+    p = MeV_to_km * EOS_table[:,1]
+    e = MeV_to_km * EOS_table[:,2]
 
     # make interpolation for the energy density
     EOS_e = scipy.interpolate.CubicSpline(p, e)
