@@ -32,7 +32,7 @@ def yQ_ode(p, y, m, EOS_e):
     a = 4 * pi * y * np.sqrt(y)
     b = np.sqrt(y) - 2 * m
 
-    one = (a / b) * (5 * EOS_e(p) + 9 * p + EOS_e.derivative(1)(p) * (EOS_e(p) + p))
+    one = (a / b) * (5 * EOS_e(p) + 9 * p + EOS_e.derivative(nu=1)(p) * (EOS_e(p) + p))
     two = -6 * np.sqrt(y) / b
     three = -4 * (m / b + a * p / b) ** 2
 
@@ -104,7 +104,7 @@ def clean_MRL(MRL_table):
     return clean_MRL, numdel
         
 
-def solve(EOS_table, max_pressure=1500, size=100):
+def solve(EOS_table, max_pressure=350, size=100):
     """
     EOS_table: numpy array containing the baryon density (0.16 fm-3), pressure (MeV/fm3), and energy density (MeV/fm3).
     max_pressure: Scalar value for maximum central pressure (MeV/fm3) used when solving the TOV equations.
@@ -118,7 +118,7 @@ def solve(EOS_table, max_pressure=1500, size=100):
 
     # make interpolation for the energy density
     EOS_e = scipy.interpolate.CubicSpline(p, e)
-#     EOS_e = scipy.interpolate.UnivariateSpline(p, e, k=1)
+#     EOS_e = scipy.interpolate.interp1d(p, e)
 
     # define the central pressures over which we will solve TOV eqs
 #     size = 100
