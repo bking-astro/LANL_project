@@ -82,6 +82,9 @@ def sample_polytrop(num_points, ns, p_start, max_gamma):
 
     # sample random gammas
     gammas = sts.uniform.rvs(scale=max_gamma, size=num_points + 1)
+#     require the first gamma is large enough
+    if gammas[0] < 1.5:
+        gammas = sts.uniform.rvs(scale=max_gamma, size=num_points + 1)
 
     # initialize K array
     K0 = p_start * (n_0 ** (-gammas[0]))
@@ -199,7 +202,6 @@ def extend_EOS_polytrop(n_step, ns, starts, Ks, gammas):
     EOS_ex[0, 2] = starts[2]
 
     i = 0
-    causality = True
 
     for k in range(size - 1):
         # n_i+1
@@ -215,9 +217,10 @@ def extend_EOS_polytrop(n_step, ns, starts, Ks, gammas):
 
         # causality check
         if (EOS_ex[k + 1, 1] - EOS_ex[k, 1]) / (EOS_ex[k + 1, 2] - EOS_ex[k, 2]) > 1:
-            causality = False
+             break # stop extension when causality is broken
 
-    return EOS_ex, causality
+    EOS = EOS_ex[:k+1,:]
+    return EOS
 
 
 def stitch_EOS(small_EOS, EOS_ex):
@@ -246,7 +249,7 @@ def stitch_EOS(small_EOS, EOS_ex):
     return tot_EOS
 
 
-def extend(small_EOS, nsamp, rho_step=1e-3, rho_max=10, ext_type=None, max_gamma=3):
+def extend(small_EOS, nsamp, rho_step=1e-3, rho_max=12, ext_type=None, max_gamma=6):
     """
     Function to simulate and extend an EOS three ways
 
@@ -260,7 +263,6 @@ def extend(small_EOS, nsamp, rho_step=1e-3, rho_max=10, ext_type=None, max_gamma
         'cs' (string) or 1 (int)
         'linear' or 2
         'polytrop' or 3
-        None to return all three types of extensions
     a_gamma: only needed if doing polytropic extension, but characterized the distribution from
                 which gamma's are drawn
 
@@ -279,31 +281,6 @@ def extend(small_EOS, nsamp, rho_step=1e-3, rho_max=10, ext_type=None, max_gamma
 
     ns = sample_ns(nsamp, n[-1], n_max)
 
-    if ext_type == None:
-        # derivative of pressure wrt energy
-        dp_de = scipy.interpolate.CubicSpline(p, e).derivative(nu=1)
-        # definition of speed of sound
-        cs_start = np.sqrt(1 / dp_de(p[-1]))
-        # sample cs
-        cs = sample_cs(nsamp, cs_start)
-        # make speed of sound squared function
-        cs2_func = scipy.interpolate.interp1d(ns, cs ** 2)
-
-        # extend EOS with linear c_s^2 interpolation
-        EOS_ex1 = extend_cs(rho_step, ns, starts, cs2_func)
-        EOS_tot1 = stitch_EOS(small_EOS, EOS_ex1)
-        # extend EOS with linear P interpolation
-        EOS_ex2 = extend_Plin(rho_step, ns, starts, cs)
-        EOS_tot2 = stitch_EOS(small_EOS, EOS_ex2)
-        # sample parameters
-        gammas, Ks = sample_polytrop(nsamp, ns, p[-1], max_gamma)
-
-        # extend EOS
-        EOS_ex3, causality = extend_EOS_polytrop(rho_step, ns, starts, Ks, gammas)
-        EOS_tot3 = stitch_EOS(small_EOS, EOS_ex3)
-
-        return EOS_tot1, EOS_tot2, EOS_tot3, causality
-
     if ext_type == 'cs' or ext_type == 1:
         # derivative of pressure wrt energy
         dp_de = scipy.interpolate.CubicSpline(p, e).derivative(nu=1)
@@ -321,9 +298,9 @@ def extend(small_EOS, nsamp, rho_step=1e-3, rho_max=10, ext_type=None, max_gamma
         EOS_ex = extend_cs(rho_step, ns, starts, cs2_func)
         EOS_tot = stitch_EOS(small_EOS, EOS_ex)
 
-        return EOS_tot
+        return EOS_tot, ns, cs
 
-    elif ext_type == 'linear' or ext_type == 2:
+    elif ext_type == 'lin' or ext_type == 2:
         # derivative of pressure wrt energy
         dp_de = scipy.interpolate.CubicSpline(p, e).derivative(nu=1)
         # definition of speed of sound
@@ -335,20 +312,20 @@ def extend(small_EOS, nsamp, rho_step=1e-3, rho_max=10, ext_type=None, max_gamma
         EOS_ex = extend_Plin(rho_step, ns, starts, cs)
         EOS_tot = stitch_EOS(small_EOS, EOS_ex)
 
-        return EOS_tot
+        return EOS_tot, ns, cs
 
-    elif ext_type == 'polytrop' or ext_type == 3:
+    elif ext_type == 'poly' or ext_type == 3:
         # sample parameters
         gammas, Ks = sample_polytrop(nsamp, ns, p[-1], max_gamma)
 
-        # extend EOS
-        EOS_ex, causality = extend_EOS_polytrop(rho_step, ns, starts, Ks, gammas)
+        EOS_ex = extend_EOS_polytrop(rho_step, ns, starts, Ks, gammas)
+
         EOS_tot = stitch_EOS(small_EOS, EOS_ex)
 
-        return EOS_tot, causality
+        return EOS_tot, ns, gammas, Ks
 
     else:
         print('The ext_type you entered does not match any of the allowed types. Please enter "cs" for a ' +
-              'speed of sound extension, "linear" for an extension linear in pressure and "polytop" ' +
+              'speed of sound extension, "lin" for an extension linear in pressure and "poly" ' +
               'for a polytropic extension')
     return
