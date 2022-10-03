@@ -69,7 +69,7 @@ for (e,), (m1, m2) in zip(dist_eos.rvs(size=1000000), dist_m.rvs(size=1000000)):
 
     e = int(e)
 
-    MRLname = 'cs3MRL/'
+    MRLname = 'cs5MRL/'
 
     tov_file = '/global/cscratch1/sd/bkingast/EOS_inference/EOS/LANL_Project_eos/' + MRLname + str(e) + '.dat'
     data = numpy.loadtxt(tov_file)
@@ -105,7 +105,7 @@ from pycbc.conversions import lambda_tilde
 labels = ['lambda1', 'lambda2', 'lambda_tilde', 'mass1', 'mass2', 'radius', 'mchirp', 'eos']
 samples_post_rec2nsat = {l: [] for l in labels}
 
-fp=loadfile('/global/cscratch1/sd/bkingast/LANL_project/pycbc_runs/data/cs3_0829_ind.hdf','r+')
+fp=loadfile('/global/cscratch1/sd/bkingast/LANL_project/pycbc_runs/data/cs5_0829_ind.hdf','r+')
 
 #parameters = fp['samples'].keys()
 #samples = fp.read_samples(parameters, flatten=True)
@@ -155,7 +155,7 @@ plt.ylabel(r"Probability Density", fontsize=18)
 plt.legend(fontsize=15)
 plt.title('SNR 33', fontsize=18, pad=18)
 plt.tight_layout()
-plt.savefig("prior_post_cs3.png")
+plt.savefig("../plots/lambda_prior_post_cs5.png")
 
 # plot lambda_tilde priors and posterior
 fig, ax = plt.subplots(1, 1, figsize=(8, 6))
@@ -180,4 +180,4 @@ plt.ylabel(r"Probability Density", fontsize=18)
 plt.legend(fontsize=15)
 plt.title('SNR 33', fontsize=18, pad=18)
 plt.tight_layout()
-plt.savefig("r1p4_prior_post_cs3.png")
+plt.savefig("../plots/r1p4_prior_post_cs5.png")
