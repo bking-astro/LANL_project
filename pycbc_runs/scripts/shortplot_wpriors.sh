@@ -2,7 +2,6 @@
 pycbc_inference_plot_posterior --verbose \
         --input-file ../data/cs3_0829_ind.hdf ../data/cs5_0829_ind.hdf \
         --output-file shortcs3cs5_wprior.png \
-        --plot-scatter \
         --plot-contours \
         --plot-marginal \
 	--plot-prior /global/cscratch1/sd/bkingast/EOS_inference/ini_files/gw170817_cs3.ini /global/cscratch1/sd/bkingast/EOS_inference/ini_files/gw170817_cs5.ini \
