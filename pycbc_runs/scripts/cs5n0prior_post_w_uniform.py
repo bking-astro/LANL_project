@@ -186,7 +186,7 @@ ax.hist(samples_post_uniform['lambda_tilde'], bins=num_bins, histtype='step',
 plt.tick_params(axis='both', which='major', labelsize=16)
 plt.xlabel(r"$\tilde \Lambda$", fontsize=18)
 plt.ylabel(r"Probability Density", fontsize=18)
-plt.legend(fontsize=15)
+plt.legend(fontsize=15, loc="upper right")
 plt.tight_layout()
 plt.savefig("../plots/cs5n0_lambda_prior_post.png")
 
@@ -217,6 +217,6 @@ ax.hist(samples_post_uniform['radius_1p4'], bins=num_bins, histtype='step',
 plt.tick_params(axis='both', which='major', labelsize=16)
 plt.xlabel(r"$R_{1.4}$ (km)", fontsize=18)
 plt.ylabel(r"Probability Density", fontsize=18)
-plt.legend(fontsize=15, loc="upper left")
+plt.legend(fontsize=15, loc="upper right")
 plt.tight_layout()
 plt.savefig("../plots/cs5n0_r1p4_prior_post.png")
