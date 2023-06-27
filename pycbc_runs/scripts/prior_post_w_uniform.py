@@ -33,7 +33,7 @@ for (e,), (m1, m2) in zip(dist_eos.rvs(size=1000000), dist_m.rvs(size=1000000)):
 
     e = int(e)
 
-    MRLname = 'cs3MRL/'
+    MRLname = 'lin5MRL/'
 
     tov_file = '/global/cscratch1/sd/bkingast/EOS_inference/EOS/LANL_Project_eos/' + MRLname + str(e) + '.dat'
     data = numpy.loadtxt(tov_file)
@@ -113,7 +113,7 @@ from pycbc.conversions import lambda_tilde
 
 samples_post_rec2nsat = {l: [] for l in labels}
 
-fp=loadfile('/global/cscratch1/sd/bkingast/LANL_project/pycbc_runs/data/cs3_0829_ind.hdf','r+')
+fp=loadfile('/global/cscratch1/sd/bkingast/LANL_project/pycbc_runs/data/cs5_0829_ind.hdf','r+')
 
 #parameters = fp['samples'].keys()
 #samples = fp.read_samples(parameters, flatten=True)
@@ -134,7 +134,7 @@ samples_post_rec2nsat['radius_1p4'] = r1p4
 
 samples_post_uniform = {l: [] for l in labels}
 
-fp=loadfile('/global/cscratch1/sd/bkingast/LANL_project/pycbc_runs/data/uniform_0905_ind.hdf','r+')
+fp=loadfile('/global/cscratch1/sd/bkingast/LANL_project/pycbc_runs/data/uniform_1017_ind.hdf','r+')
 
 #parameters = fp['samples'].keys()
 #samples = fp.read_samples(parameters, flatten=True)
@@ -161,7 +161,7 @@ ax_labels = [r'$\tilde \Lambda$']
 #for a, p, l in zip(ax.flatten(), params, ax_labels):
 #max_param_val = int(max(samples4[p]))
 #num_bins = max_param_val/100 if max_param_val > 2 else 50
-num_bins = 40
+num_bins = 50
 #ax.hist(samples_prior_unilam['lambda_tilde'], bins=40, histtype='step',
 #        facecolor='None', edgecolor='red', ls='dotted', lw=2,
 #            density=True, label=r"Prior: Uniform $\tilde \Lambda$")
@@ -169,17 +169,17 @@ num_bins = 40
 #         facecolor='None', edgecolor='red', ls='solid', lw=2,
 #         density=True, label=r"Posterior: Uniform $\tilde \Lambda$ prior")
 ax.hist(samples_prior_rec2nsat['lambda_tilde'], bins=40, histtype='step',
-        facecolor='None', edgecolor='blue', ls='dotted', lw=2, density=True, label=r"Prior: 2nsat - 3 segment $c_s$")
+        facecolor='None', edgecolor='g', ls='dotted', lw=2, density=True, label=r"Prior:cs5")
 ax.hist(samples_post_rec2nsat['lambda_tilde'], bins=num_bins, histtype='step',
-        facecolor='None', edgecolor='blue', ls='solid', lw=2,
-        density=True, label=r"Posterior: 2nsat - 3 segment $c_s$ prior")
+        facecolor='None', edgecolor='g', ls='solid', lw=2,
+        density=True, label=r"Posterior:cs5 prior")
 #ax.set(xlabel=l)
 #         density=True, label=r"Posterior: Uniform $\tilde \Lambda$ prior")
 ax.hist(samples_prior_uniform['lambda_tilde'], bins=40, histtype='step',
-        facecolor='None', edgecolor='blue', ls='dotted', lw=2, density=True, label=r"Prior: 2nsat - Uniform $R_{1.4}$")
+        facecolor='None', edgecolor='b', ls='dotted', lw=2, density=True, label=r"Prior:Uniform $R_{1.4}$")
 ax.hist(samples_post_uniform['lambda_tilde'], bins=num_bins, histtype='step',
-        facecolor='None', edgecolor='blue', ls='solid', lw=2,
-        density=True, label=r"Posterior: 2nsat - Uniform $R_{1.4}$ prior") 
+        facecolor='None', edgecolor='b', ls='solid', lw=2,
+        density=True, label=r"Posterior:Uniform $R_{1.4}$ prior") 
 #ax.xaxis.label.set_size(22)
 #ax.yaxis.label.set_size(22)
 
@@ -187,9 +187,9 @@ plt.tick_params(axis='both', which='major', labelsize=16)
 plt.xlabel(r"$\tilde \Lambda$", fontsize=18)
 plt.ylabel(r"Probability Density", fontsize=18)
 plt.legend(fontsize=15)
-plt.title('SNR 33', fontsize=18, pad=18)
+plt.title('Comparison of cs5 and Uniform', fontsize=18, pad=18)
 plt.tight_layout()
-plt.savefig("../plots/lambda_prior_post_cs3.png")
+plt.savefig("../plots/lambda_prior_post_cs5.png")
 
 # plot lambda_tilde priors and posterior
 fig, ax = plt.subplots(1, 1, figsize=(8, 6))
@@ -198,19 +198,19 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 6))
 #for a, p, l in zip(ax.flatten(), params, ax_labels):
 #max_param_val = int(max(samples4[p]))
 #num_bins = max_param_val/100 if max_param_val > 2 else 50
-num_bins = 40
+num_bins = 50
 
 ax.hist(samples_prior_rec2nsat['radius_1p4'], bins=40, histtype='step',
-        facecolor='None', edgecolor='blue', ls='dotted', lw=2, density=True, label=r"Prior: 2nsat - 3 segment $c_s$")
+        facecolor='None', edgecolor='g', ls='dotted', lw=2, density=True, label=r"Prior:cs5")
 ax.hist(samples_post_rec2nsat['radius_1p4'], bins=num_bins, histtype='step',
-        facecolor='None', edgecolor='blue', ls='solid', lw=2,
-        density=True, label=r"Posterior: 2nsat - 3 segment $c_s$ prior")
+        facecolor='None', edgecolor='g', ls='solid', lw=2,
+        density=True, label=r"Posterior:cs5 prior")
 
 ax.hist(samples_prior_uniform['radius_1p4'], bins=40, histtype='step',
-        facecolor='None', edgecolor='blue', ls='dotted', lw=2, density=True, label=r"Prior: 2nsat - Uniform $R_{1.4}$")
+        facecolor='None', edgecolor='b', ls='dotted', lw=2, density=True, label=r"Prior:Uniform $R_{1.4}$")
 ax.hist(samples_post_uniform['radius_1p4'], bins=num_bins, histtype='step',
-        facecolor='None', edgecolor='blue', ls='solid', lw=2,
-        density=True, label=r"Posterior: 2nsat - Uniform $R_{1.4}$ prior")
+        facecolor='None', edgecolor='b', ls='solid', lw=2,
+        density=True, label=r"Posterior:Uniform $R_{1.4}$ prior")
 #ax.set(xlabel=l)
 #ax.xaxis.label.set_size(22)
 #ax.yaxis.label.set_size(22)
@@ -218,7 +218,7 @@ ax.hist(samples_post_uniform['radius_1p4'], bins=num_bins, histtype='step',
 plt.tick_params(axis='both', which='major', labelsize=16)
 plt.xlabel(r"$R_{1.4}$ (km)", fontsize=18)
 plt.ylabel(r"Probability Density", fontsize=18)
-plt.legend(fontsize=15)
-plt.title('SNR 33', fontsize=18, pad=18)
+plt.legend(fontsize=15, loc="upper left")
+plt.title('Comparison of lin5 and Uniform', fontsize=18, pad=18)
 plt.tight_layout()
-plt.savefig("../plots/r1p4_prior_post_cs3.png")
+plt.savefig("../plots/r1p4_prior_post_cs5.png")
