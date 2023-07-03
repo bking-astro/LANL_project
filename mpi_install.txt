@@ -1,0 +1,30 @@
+# create & activate conda environment
+> module load python
+> conda create -n venv_pycbc python=3.9 pip -c conda-forge
+> conda activate venv_pycbc
+
+# install mpi4py as recommended here https://docs.nersc.gov/development/languages/python/parallel-python/#mpi4py
+> module swap PrgEnv-${PE_ENV,,} PrgEnv-gnu
+> MPICC="cc -shared" pip install --force-reinstall --no-cache-dir --no-binary=mpi4py mpi4py
+
+# build h5py against mpi4py for parallel I/O 
+> module load cray-hdf5-parallel
+> module swap PrgEnv-${PE_ENV,,} PrgEnv-gnu
+> conda install -c defaults --override-channels numpy cython
+> HDF5_MPI=ON CC=cc pip install -v --force-reinstall --no-cache-dir --no-binary=h5py --no-build-isolation --no-deps h5py
+
+# Install schwimmbad
+> pip install schwimmbad
+
+# fixes for conda + mpi4py known issues at NERSC as recommended here https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#known-issues
+> module load evp-patch
+> export MPI4PY_RC_RECV_MPROBE=0
+> export CXI_FORK_SAFE=1
+> export CXI_FORK_SAFE_HP=1
+> module load fast-mkl-amd
+
+# install PyCBC (cd into pycbc repo)
+> cd ~/repos/pycbc/
+> pip install -r requirements.txt 
+> pip install -r companion.txt 
+> pip install .
